@@ -1,12 +1,9 @@
-import logo from './logo.svg';
 import './App.css';
-import Navbar from "./components/Navbar";
 import HeatMap from "./components/HeatMap";
 import DataFilters from "./components/DataFilters";
 import DataTable from "./components/DataTable";
 import DataInput from "./components/DataInput";
 import {useState} from "react";
-import * as d3 from "d3";
 
 function App() {
 
@@ -43,7 +40,6 @@ function App() {
         iprId: false,
         filterFunction: false
     })
-
 
     // const [heatmapData, setHeatmapData] = useState({})
     // const [tableData, setTableData] = useState({})
@@ -112,6 +108,8 @@ function App() {
             handleSubmit={handleSubmitDataFilters}
             handleChange={handleChangeDataFilters}
             formData={dataFilters}
+            dataLink={dataLinks.dataset1Link}
+            propsFilters={submittedDataFilters}
         />}
         {!dataUploaded && dataLinks.dataset1Link !== "" && <DataTable
             //data={tableData}
