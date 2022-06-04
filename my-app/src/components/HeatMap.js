@@ -1,11 +1,12 @@
-import React, {useState,useEffect, useRef} from 'react'
-import * as d3 from 'd3'
+import React, {useState,useEffect, useRef} from 'react';
+import * as d3 from 'd3';
 
 
 export default function HeatMap(props) {
 
-    let {dataLink, filters} = props;
-    const [data, setData] = useState(null);
+    let {dataLink, propsFilters} = props;
+    let {proteinId, color, pathway, ecNum, filterDefinition, gotermID, kogId, kogClass, iprId, filterFunction} = propsFilters;
+    // const [data, setData] = useState(null);
 
     const margin = {top: 40, right: 0, bottom: 20, left: 0};
     const [width, setWidth] = useState(600 - margin.left - margin.right);
@@ -21,18 +22,87 @@ export default function HeatMap(props) {
 
         d3.csv(dataLink).then(async function(data) {
 
+            let filteredData = data
+            if (proteinId && proteinId.length > 0) {
+                filteredData = filteredData.filter(function(d) {
+                    for (let pathOpt of proteinId) {
+                        if (d["proteinId"] == pathOpt) {
+                            return d;
+                        }
+                    }
+                })
+            }
+            if (color && color.length > 0) {
+                filteredData = filteredData.filter(function(d) {
+                    for (let pathOpt of color) {
+                        if (d["dsmoduleColors"] == pathOpt) {
+                            return d;
+                        }
+                    }
+                })
+            }
+            if (pathway && pathway.length > 0) {
+                filteredData = filteredData.filter(function(d) {
+                    for (let pathOpt of pathway) {
+                        if (d["pathway"] == pathOpt) {
+                            return d;
+                        }
+                    }
+                })
+            }
+            if (ecNum) {
+                filteredData = filteredData.filter(d => {
+                    if (d["ecNum"] !== 'NA') {
+                        return d;
+                    }
+                })
+            }
+            if (filterDefinition) {
+                filteredData = filteredData.filter(d => {
+                    if (d["definition"] !== 'NA') {
+                        return d;
+                    }
+                })
+            }
+            if (gotermID) {
+                filteredData = filteredData.filter(d => {
+                    if (d["gottermID"] !== 'NA') {
+                        return d;
+                    }
+                })
+            }
+            if (kogId) {
+                filteredData = filteredData.filter(d => {
+                    if (d["kogId"] !== 'NA') {
+                        return d;
+                    }
+                })
+            }
+            if (kogClass) {
+                filteredData = filteredData.filter(d => {
+                    if (d["kogClass"] !== 'NA') {
+                        return d;
+                    }
+                })
+            }
+            if (iprId) {
+                filteredData = filteredData.filter(d => {
+                    if (d["iprId"] !== 'NA') {
+                        return d;
+                    }
+                })
+            }
+            if (filterFunction) {
+                filteredData = filteredData.filter(d => {
+                    if (d["filterFunction"] !== 'NA') {
+                        return d;
+                    }
+                })
+            }
+
+            data = filteredData
             console.log("Data:")
             console.log(data)
-
-            // if (filters && filters.length > 0) {
-            //     data = data.filter(function(d) {
-            //         for (let proteinId of filters) {
-            //             if (d["proteinId"] == proteinId) {
-            //                 return d;
-            //             }
-            //         }
-            //     })
-            // }
 
             let sumstat = d3.group(data, m => m.dsmoduleColors)
 

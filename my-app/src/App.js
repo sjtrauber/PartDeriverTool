@@ -19,13 +19,34 @@ function App() {
     });
 
     const [dataFilters, setDataFilters] = useState({
-        filter1: "",
-        filter2: ""
+        proteinId: [],
+        color: [],
+        pathway: [],
+        ecNum: false,
+        filterDefinition: false,
+        gotermID: false,
+        kogId: false,
+        kogClass: false,
+        iprId: false,
+        filterFunction: false
     })
 
-    const [heatmapData, setHeatmapData] = useState({})
+    const [submittedDataFilters, setSubmittedDataFilters] = useState({
+        proteinId: [],
+        color: [],
+        pathway: [],
+        ecNum: false,
+        filterDefinition: false,
+        gotermID: false,
+        kogId: false,
+        kogClass: false,
+        iprId: false,
+        filterFunction: false
+    })
 
-    const [tableData, setTableData] = useState({})
+
+    // const [heatmapData, setHeatmapData] = useState({})
+    // const [tableData, setTableData] = useState({})
 
     function handleChangeDataInput(event) {
         const {name, value} = event.target
@@ -43,31 +64,34 @@ function App() {
     }
 
     function handleChangeDataFilters(event) {
-        const {name, value} = event.target
+        const {name, value, type, checked} = event.target
         setDataFilters(d => {
             return {
                 ...d,
-                [name]: value
+                [name]: type === 'checkbox' ? checked : value
             }
         })
-    }
 
+    }
+    console.log(dataFilters)
     async function handleSubmitDataFilters(event) {
         event.preventDefault()
+        setSubmittedDataFilters(dataFilters)
+
+
+    }
+
+    // need to use the change of set filters trigger to allow the
+    // change of state to rerender heatmap and table?
+    // not sure if we can do that otherwise we can make another state that is equivalent to old state
+    // and reset that state here or just let it update automatically?
+    // function getData() {
         // setTableData(d3.json(dataLinks.dataset1Link))
         // let data = d3.json(dataLinks.dataset2Link).then(d => d)
         // setHeatmapData(data)
         // setFiltersTrigger(!filtersTrigger)
+    // }
 
-        // need to use the change of set filters trigger to allow the
-        // change of state to rerender heatmap and table?
-        // not sure if we can do that otherwise we can make another state that is equivalent to old state
-        // and reset that state here or just let it update automatically?
-
-
-    }
-    //console.log("Data in app:")
-    //console.log(heatmapData)
 
 
     return (
@@ -79,20 +103,20 @@ function App() {
             formData={dataLinks}
 
         />}
-        {!dataUploaded && <HeatMap
+        {!dataUploaded && dataLinks.dataset2Link !== "" && <HeatMap
             //data={heatmapData}
             dataLink={dataLinks.dataset2Link}
-            filters={dataFilters}
+            propsFilters={submittedDataFilters}
         />}
-        {!dataUploaded && <DataFilters
+        {!dataUploaded && dataLinks.dataset1Link !== "" && <DataFilters
             handleSubmit={handleSubmitDataFilters}
             handleChange={handleChangeDataFilters}
             formData={dataFilters}
         />}
-        {tableData.length > 0 && <DataTable
+        {!dataUploaded && dataLinks.dataset1Link !== "" && <DataTable
             //data={tableData}
             dataLink={dataLinks.dataset1Link}
-            filters={dataFilters}
+            propsFilters={submittedDataFilters}
             // if we leave dataFilters connected we might want not want to apply the individually clicked items?
         />}
 

@@ -1,11 +1,10 @@
 import React from 'react'
 
 export default function DataTable(props) {
-    let word = "Hello World"
+    let word = props.filters.filter1
 
     return (
         <div>
-            <input />
             <p>{word}</p>
         </div>
     )
